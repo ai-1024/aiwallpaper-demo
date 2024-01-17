@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-
+import { UserButton } from "@clerk/nextjs";
 export default function () {
   return (
     <header>
@@ -21,7 +21,9 @@ export default function () {
             </a>
 
             <div className="flex flex-row items-center lg:flex lg:flex-row lg:space-x-3 lg:space-y-0">
-              <div className="hidden md:block mr-8"></div>
+              <div className="hidden md:block mr-8">
+                <UserButton afterSignOutUrl="/" />
+              </div>
             </div>
             <a href="#" className="absolute right-5 lg:hidden"></a>
           </div>
