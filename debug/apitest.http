@@ -13,3 +13,13 @@ Content-Type: application/json
 
 ### get wallpapers
 GET {{baseUri}}/get-wallpapers
+
+### checkout
+POST {{baseUri}}/checkout 
+Content-Type: application/json
+
+{
+    "amount": 990,
+    "plan": "subscribe",
+    "credits": 50
+}

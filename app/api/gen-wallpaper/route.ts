@@ -5,6 +5,7 @@ import { User } from "@/types/user";
 import { Wallpaper } from "@/types/wallpaper";
 import { downloadAndUploadImage } from "@/lib/s3";
 import { getOpenAIClient } from "@/service/openai";
+import { getUserCredits } from "@/service/order";
 import { insertUser } from "@/models/user";
 import { insertWallpaper } from "@/models/wallpaper";
 
@@ -20,6 +21,16 @@ export async function POST(req: Request) {
   }
 
   const user_email = user.emailAddresses[0].emailAddress;
+  const credits = await getUserCredits(user_email);
+  console.log("credits", credits);
+
+  if (credits.left_credits < 150) {
+    return Response.json({
+      code: -1,
+      message: "credits is not enough",
+    });
+  }
+
   const nickname = user.firstName;
   const avatarUrl = user.imageUrl;
   const userInfo: User = {
@@ -58,12 +69,13 @@ export async function POST(req: Request) {
   }
 
   const img_name = encodeURIComponent(description);
-  const s3_img = await downloadAndUploadImage(
-    raw_img_url,
-    process.env.AWS_BUCKET || "aiwallpaper-demo",
-    `wallpapers/${img_name}.png`
-  );
-  const img_url = s3_img.Location;
+  // const s3_img = await downloadAndUploadImage(
+  //   raw_img_url,
+  //   process.env.AWS_BUCKET || "aiwallpaper-demo",
+  //   `wallpapers/${img_name}.png`
+  // );
+  // const img_url = s3_img.Location;
+  const img_url = raw_img_url;
 
   const created_at = new Date().toISOString();
 

@@ -1,6 +1,29 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
+
 export default function () {
+  const [credis, setCredits] = useState(0);
+
+  const fetchUserInfo = async () => {
+    const response = await fetch("/api/get-user-info", {
+      method: "POST",
+    });
+
+    const { code, message, data } = await response.json();
+    console.log("userinfo", data);
+    if (data && data.credits) {
+      setCredits(data.credits.left_credits);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
   return (
     <header>
       <div className="h-auto w-screen">
@@ -20,6 +43,10 @@ export default function () {
               </span>
             </a>
 
+            <a href="/pricing">付费</a>
+
+            <div className="flex-1"></div>
+            <p>credis: {credis}</p>
             <div className="flex flex-row items-center lg:flex lg:flex-row lg:space-x-3 lg:space-y-0">
               <div className="hidden md:block mr-8">
                 <UserButton afterSignOutUrl="/" />
